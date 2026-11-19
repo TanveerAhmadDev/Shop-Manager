@@ -1,14 +1,14 @@
-import { Request, Response } from "express";
+import type { Request, Response, CookieOptions } from "express";
 import bcrypt from "bcryptjs";
 
 import { pool } from "../config/db.js";
 import { generateSystemAdminToken } from "../utils/system-admin-jwt.js";
 
 // Cookie configuration.
-const cookieOptions = {
+const cookieOptions: CookieOptions = {
   httpOnly: true,
   secure: process.env.NODE_ENV === "production",
-  sameSite: "lax" as const,
+  sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
   path: "/",
 };
 
