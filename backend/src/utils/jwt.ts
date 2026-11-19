@@ -28,7 +28,7 @@ export const setAuthCookie = (res: Response, token: string): void => {
   res.cookie("accessToken", token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
     maxAge: cookieMaxAge,
     path: "/",
   });
