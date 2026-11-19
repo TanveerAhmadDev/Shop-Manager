@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#2A6A8B" />
+
+    <title>No Internet - Furniture Manager</title>
+
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        background: #f5f7fa;
+        font-family: Arial, sans-serif;
+        color: #172033;
+      }
+
+      .container {
+        width: 100%;
+        max-width: 420px;
+        padding: 35px 25px;
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 18px;
+        text-align: center;
+        box-shadow: 0 10px 35px rgba(0, 0, 0, 0.05);
+      }
+
+      .icon {
+        width: 75px;
+        height: 75px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 22px;
+        border-radius: 50%;
+        background: #eaf3f7;
+        color: #2a6a8b;
+        font-size: 35px;
+      }
+
+      h1 {
+        margin: 0 0 12px;
+        font-size: 24px;
+      }
+
+      p {
+        color: #64748b;
+        font-size: 14px;
+        line-height: 1.7;
+      }
+
+      .status {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        margin: 15px 0 22px;
+        padding: 8px 13px;
+        border-radius: 20px;
+        background: #fee2e2;
+        color: #991b1b;
+        font-size: 12px;
+        font-weight: bold;
+      }
+
+      .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #dc2626;
+      }
+
+      button {
+        width: 100%;
+        padding: 13px;
+        border: none;
+        border-radius: 9px;
+        background: #2a6a8b;
+        color: white;
+        font-size: 15px;
+        font-weight: bold;
+        cursor: pointer;
+      }
+
+      button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      .footer {
+        margin-top: 25px;
+        font-size: 12px;
+        color: #94a3b8;
+      }
+    </style>
+  </head>
+
+  <body>
+    <main class="container">
+      <div class="icon">⌁</div>
+
+      <h1>No Internet Connection</h1>
+
+      <p>
+        Furniture Manager needs an internet connection to work. Please connect
+        your device to the internet to access your shop dashboard and business
+        features.
+      </p>
+
+      <div class="status" id="status">
+        <span class="dot"></span>
+        You are offline
+      </div>
+
+      <button id="retryButton" disabled>Waiting for connection...</button>
+
+      <p class="footer">Furniture Manager · Your business, organized.</p>
+    </main>
+
+    <script>
+      const statusElement = document.getElementById("status");
+      const retryButton = document.getElementById("retryButton");
+
+      // Preserve the page the user was trying to open.
+      const params = new URLSearchParams(window.location.search);
+      const requestedPath = params.get("returnTo");
+
+      const returnTo =
+        requestedPath &&
+        requestedPath.startsWith("/") &&
+        !requestedPath.startsWith("//")
+          ? requestedPath
+          : window.location.pathname !== "/offline.html"
+            ? window.location.pathname + window.location.search
+            : "/";
+
+      function updateConnectionStatus() {
+        if (navigator.onLine) {
+          statusElement.innerHTML =
+            '<span class="dot" style="background:#16a34a"></span> Internet connected';
+
+          statusElement.style.background = "#dcfce7";
+          statusElement.style.color = "#166534";
+
+          retryButton.disabled = false;
+          retryButton.textContent = "Reconnect to Furniture Manager";
+        } else {
+          statusElement.innerHTML = '<span class="dot"></span> You are offline';
+
+          statusElement.style.background = "#fee2e2";
+          statusElement.style.color = "#991b1b";
+
+          retryButton.disabled = true;
+          retryButton.textContent = "Waiting for connection...";
+        }
+      }
+
+      retryButton.addEventListener("click", () => {
+        if (navigator.onLine) {
+          window.location.replace(returnTo);
+        }
+      });
+
+      window.addEventListener("online", updateConnectionStatus);
+      window.addEventListener("offline", updateConnectionStatus);
+
+      updateConnectionStatus();
+    </script>
+  </body>
+</html>
